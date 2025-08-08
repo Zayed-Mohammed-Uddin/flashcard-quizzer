@@ -1,0 +1,40 @@
+{
+	"name": "flashcard-quizzer",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"lint": "eslint .",
+		"preview": "vite preview",
+		"server": "json-server --watch ./src/data/db.json --port 3001",
+		"dev:all": "concurrently \"npm run server\" \"npm run dev\""
+	},
+	"dependencies": {
+		"@radix-ui/react-alert-dialog": "^1.1.14",
+		"@radix-ui/react-dialog": "^1.1.14",
+		"@reduxjs/toolkit": "^2.8.2",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0",
+		"react-hook-form": "^7.62.0",
+		"react-icons": "^5.5.0",
+		"react-redux": "^9.2.0",
+		"react-router-dom": "^7.7.1",
+		"styled-components": "^6.1.13",
+		"tailwind-styled-components": "^2.2.0"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.30.1",
+		"@tailwindcss/vite": "^4.1.11",
+		"@vitejs/plugin-react": "^4.6.0",
+		"concurrently": "^9.2.0",
+		"eslint": "^9.30.1",
+		"eslint-plugin-react-hooks": "^5.2.0",
+		"eslint-plugin-react-refresh": "^0.4.20",
+		"globals": "^16.3.0",
+		"json-server": "^1.0.0-beta.3",
+		"tailwindcss": "^4.1.11",
+		"vite": "^7.0.4"
+	}
+}

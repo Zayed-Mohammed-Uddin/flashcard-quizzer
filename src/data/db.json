@@ -1,0 +1,30 @@
+{
+  "decks": [
+    {
+      "id": "1754593542169",
+      "name": "Chemistry Quiz",
+      "description": "Contains chapter 1",
+      "cards": [
+        {
+          "front": "H20",
+          "back": "Water",
+          "id": "1754593530448"
+        },
+        {
+          "front": "Sn",
+          "back": "Tin",
+          "id": "1754593538390"
+        }
+      ],
+      "createdAt": "2025-08-07T19:05:42.169Z"
+    },
+    {
+      "id": "1754612764768",
+      "name": "12",
+      "description": "12",
+      "cards": [],
+      "createdAt": "2025-08-08T00:26:04.768Z"
+    }
+  ],
+  "quizResults": []
+}
