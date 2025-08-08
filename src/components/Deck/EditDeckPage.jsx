@@ -1,8 +1,8 @@
 import { useNavigate, useLoaderData } from "react-router-dom";
 import { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
-import DeckDetailsForm from "../CreateDeck/DeckDetailsForm";
-import FlashcardsList from "../CreateDeck/FlashcardsList";
+import DeckDetailsForm from "./DeckDetailsForm";
+import FlashcardsList from "./FlashcardsList";
 import BackButton from "../../ui/BackButton";
 import ContentLayout from "../../ui/ContentLayout";
 import ContentHeader from "../../ui/ContentHeader";
@@ -12,7 +12,7 @@ import SubText from "../../ui/SubText";
 function EditDeckPage() {
 	const navigate = useNavigate();
 	const { deck } = useLoaderData();
-	
+
 	// Local state for edit cards (isolated from Redux draft)
 	const [editCards, setEditCards] = useState(deck.cards || []);
 
@@ -25,11 +25,11 @@ function EditDeckPage() {
 			...cardData,
 			id: Date.now().toString(),
 		};
-		setEditCards(prev => [...prev, newCard]);
+		setEditCards((prev) => [...prev, newCard]);
 	};
 
 	const handleCardRemove = (cardId) => {
-		setEditCards(prev => prev.filter(card => card.id !== cardId));
+		setEditCards((prev) => prev.filter((card) => card.id !== cardId));
 	};
 
 	return (
@@ -47,11 +47,11 @@ function EditDeckPage() {
 			</ContentHeader>
 
 			<ContentLayout>
-				<DeckDetailsForm 
-					mode="edit" 
+				<DeckDetailsForm
+					mode="edit"
 					initialData={{ ...deck, cards: editCards }}
 				/>
-				<FlashcardsList 
+				<FlashcardsList
 					mode="edit"
 					cards={editCards}
 					onCardAdd={handleCardAdd}

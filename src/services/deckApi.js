@@ -59,9 +59,14 @@ export async function deleteDeck(deckId) {
 
 // Update an existing deck in db.json
 export async function updateDeck(deckId, deckData) {
+	// First, get the existing deck to preserve certain fields
+	const existingDeck = await getDeckById(deckId);
+
 	const updatedDeck = {
 		...deckData,
 		id: deckId,
+		createdAt: existingDeck.createdAt,
+		updatedAt: new Date().toISOString(),
 	};
 
 	return await apiRequest(`/decks/${deckId}`, {

@@ -5,7 +5,11 @@ import { IoIosSave } from "react-icons/io";
 import { RiResetRightLine } from "react-icons/ri";
 
 import { createDeck, updateDeck } from "../../services/deckApi";
-import { resetDraftCards, selectDraftCards, updateDeck as updateDeckAction } from "../../store/decksSlice";
+import {
+	resetDraftCards,
+	selectDraftCards,
+	updateDeck as updateDeckAction,
+} from "../../store/decksSlice";
 
 import SectionTitle from "../../ui/SectionTitle";
 import FormGroup from "../../ui/FormGroup";
@@ -26,7 +30,7 @@ function DeckDetailsForm({ mode = "create", initialData = null }) {
 	const isEditing = mode === "edit";
 
 	// Choose cards based on mode: edit uses passed data, create uses Redux
-	const cards = isEditing ? (initialData?.cards || []) : draftCards;
+	const cards = isEditing ? initialData?.cards || [] : draftCards;
 
 	const {
 		register,
@@ -51,7 +55,7 @@ function DeckDetailsForm({ mode = "create", initialData = null }) {
 			if (isEditing && initialData?.id) {
 				// Update existing deck
 				const updatedDeck = await updateDeck(initialData.id, deckData);
-				
+
 				// Defensive check: ensure we got valid data back
 				if (updatedDeck && updatedDeck.id) {
 					dispatch(updateDeckAction(updatedDeck));
@@ -61,13 +65,13 @@ function DeckDetailsForm({ mode = "create", initialData = null }) {
 			} else {
 				// Create new deck
 				const newDeck = await createDeck(deckData);
-				
+
 				// Defensive check for create operation
 				if (!newDeck || !newDeck.id) {
 					throw new Error("Failed to create deck - invalid response");
 				}
 			}
-			
+
 			// Only reset draft cards in create mode
 			if (!isEditing) {
 				dispatch(resetDraftCards());
@@ -132,12 +136,11 @@ function DeckDetailsForm({ mode = "create", initialData = null }) {
 					disabled={isLoading}
 				>
 					<IoIosSave className="w-4 h-4" />
-					{isLoading 
-						? "Saving..." 
-						: isEditing 
-							? "Update Deck" 
-							: "Save Deck"
-					}
+					{isLoading
+						? "Saving..."
+						: isEditing
+						? "Update Deck"
+						: "Save Deck"}
 				</SaveButton>
 				<ResetButton
 					variant="secondary"

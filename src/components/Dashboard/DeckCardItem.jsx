@@ -1,4 +1,5 @@
 import { FaEdit, FaTrash, FaCalendarAlt, FaPlay } from "react-icons/fa";
+import { GrUpdate } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
@@ -28,6 +29,9 @@ function DeckCardItem({ deck }) {
 		(card) => card.nextReview <= Date.now()
 	).length;
 	const createdDate = new Date(deck.createdAt).toLocaleDateString();
+	const updatedDate = deck.updatedAt
+		? new Date(deck.updatedAt).toLocaleDateString()
+		: null;
 
 	const handleEditDeck = () => {
 		navigate(`/edit-deck/${deck.id}`);
@@ -36,10 +40,8 @@ function DeckCardItem({ deck }) {
 	const handleDeleteClick = async () => {
 		setIsDeleting(true);
 		try {
-			// Delete from database first
 			await deleteDeckApi(deck.id);
 		} catch (error) {
-			// If deck doesn't exist in database (404), that's okay - it's already gone
 			if (
 				error.message.includes("404") ||
 				error.message.includes("Not Found")
@@ -49,8 +51,6 @@ function DeckCardItem({ deck }) {
 				return;
 			}
 		}
-
-		// Update Redux state and close dialog
 		dispatch(deleteDeck(deck.id));
 		setIsDialogOpen(false);
 		setIsDeleting(false);
@@ -131,6 +131,12 @@ function DeckCardItem({ deck }) {
 					<DateInfo>
 						<FaCalendarAlt className="w-3 h-3" />
 						Created {createdDate}
+						{deck.updatedAt && (
+							<span className="ms-3 text-gray-500 text-sm">
+								<GrUpdate className="inline-block w-3 h-3 mr-1" />
+								Updated {updatedDate}
+							</span>
+						)}
 					</DateInfo>
 				</MetaInfo>
 

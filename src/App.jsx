@@ -4,11 +4,11 @@ import AppLayout from "./ui/AppLayout";
 import Error from "./ui/Error";
 
 import DashboardPage from "./components/Dashboard/DashboardPage";
-import CreateDeckPage from "./components/CreateDeck/CreateDeckPage";
-import EditDeckPage from "./components/EditDeck/EditDeckPage";
+import CreateDeckPage from "./components/Deck/CreateDeckPage";
+import EditDeckPage from "./components/Deck/EditDeckPage";
 import QuizPage from "./components/Quiz/QuizPage";
 
-import { editDeckLoader } from "./components/EditDeck/loader/editDeckLoader";
+import { editDeckLoader } from "./components/Deck/loader/editDeckLoader";
 import { quizDeckLoader } from "./components/Quiz/loader/quizLoader";
 
 const router = createBrowserRouter([

@@ -20,10 +20,15 @@ import FormGroup from "../../ui/FormGroup";
 import Label from "../../ui/Label";
 import Input from "../../ui/Input";
 
-function FlashcardsList({ mode = "create", cards = [], onCardAdd, onCardRemove }) {
+function FlashcardsList({
+	mode = "create",
+	cards = [],
+	onCardAdd,
+	onCardRemove,
+}) {
 	const dispatch = useDispatch();
 	const draftCards = useSelector(selectDraftCards);
-	
+
 	// Use passed cards for edit mode, Redux state for create mode
 	const cardsToShow = mode === "edit" ? cards : draftCards;
 	const cardCount = cardsToShow.length;
