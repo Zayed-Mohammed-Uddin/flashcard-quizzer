@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { IoIosSave } from "react-icons/io";
 import { RiResetRightLine } from "react-icons/ri";
 
-import { createDeck } from "../../services/deckApi";
-import { resetDraftDeck, selectDraftDeck } from "../../store/decksSlice";
+import { createDeck, updateDeck } from "../../services/deckApi";
+import { resetDraftCards, selectDraftCards, updateDeck as updateDeckAction } from "../../store/decksSlice";
 
 import SectionTitle from "../../ui/SectionTitle";
 import FormGroup from "../../ui/FormGroup";
@@ -17,13 +17,16 @@ import SaveButton from "../../ui/SaveButton";
 import ResetButton from "../../ui/ResetButton";
 import Form from "../../ui/Form";
 
-function DeckDetailsForm() {
+function DeckDetailsForm({ mode = "create", initialData = null }) {
 	const navigate = useNavigate();
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
-	const draftDeck = useSelector(selectDraftDeck);
-	const cards = draftDeck.cards;
+	const draftCards = useSelector(selectDraftCards);
 	const isLoading = navigation.state === "submitting";
+	const isEditing = mode === "edit";
+
+	// Choose cards based on mode: edit uses passed data, create uses Redux
+	const cards = isEditing ? (initialData?.cards || []) : draftCards;
 
 	const {
 		register,
@@ -31,6 +34,10 @@ function DeckDetailsForm() {
 		formState: { errors },
 	} = useForm({
 		mode: "onChange",
+		defaultValues: {
+			deckName: initialData?.name || "",
+			description: initialData?.description || "",
+		},
 	});
 
 	const onSubmit = async (data) => {
@@ -40,8 +47,31 @@ function DeckDetailsForm() {
 				description: data.description,
 				cards,
 			};
-			await createDeck(deckData);
-			dispatch(resetDraftDeck());
+
+			if (isEditing && initialData?.id) {
+				// Update existing deck
+				const updatedDeck = await updateDeck(initialData.id, deckData);
+				
+				// Defensive check: ensure we got valid data back
+				if (updatedDeck && updatedDeck.id) {
+					dispatch(updateDeckAction(updatedDeck));
+				} else {
+					throw new Error("Invalid response from server");
+				}
+			} else {
+				// Create new deck
+				const newDeck = await createDeck(deckData);
+				
+				// Defensive check for create operation
+				if (!newDeck || !newDeck.id) {
+					throw new Error("Failed to create deck - invalid response");
+				}
+			}
+			
+			// Only reset draft cards in create mode
+			if (!isEditing) {
+				dispatch(resetDraftCards());
+			}
 			navigate("/");
 		} catch (err) {
 			throw new Error(err.message);
@@ -50,7 +80,6 @@ function DeckDetailsForm() {
 
 	return (
 		<Form onSubmit={handleSubmit(onSubmit)}>
-			{isLoading && <Spinner />}
 			<SectionTitle>Deck Details</SectionTitle>
 			<FormGroup>
 				<Label htmlFor="deckName">Deck Name*</Label>
@@ -103,7 +132,12 @@ function DeckDetailsForm() {
 					disabled={isLoading}
 				>
 					<IoIosSave className="w-4 h-4" />
-					{isLoading ? "Saving..." : "Save Deck"}
+					{isLoading 
+						? "Saving..." 
+						: isEditing 
+							? "Update Deck" 
+							: "Save Deck"
+					}
 				</SaveButton>
 				<ResetButton
 					variant="secondary"

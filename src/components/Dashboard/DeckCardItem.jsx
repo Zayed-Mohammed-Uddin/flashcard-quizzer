@@ -44,11 +44,6 @@ function DeckCardItem({ deck }) {
 				error.message.includes("404") ||
 				error.message.includes("Not Found")
 			) {
-				console.log(
-					"Deck already deleted from database, updating Redux state only"
-				);
-			} else {
-				// For other errors, don't proceed with Redux update
 				console.error("Failed to delete deck:", error);
 				setIsDeleting(false);
 				return;

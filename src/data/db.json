@@ -1,29 +1,30 @@
 {
   "decks": [
     {
-      "id": "1754593542169",
-      "name": "Chemistry Quiz",
-      "description": "Contains chapter 1",
+      "id": "1754618410826",
+      "name": "deck 3",
+      "description": "deck3",
       "cards": [
         {
-          "front": "H20",
-          "back": "Water",
-          "id": "1754593530448"
-        },
-        {
-          "front": "Sn",
-          "back": "Tin",
-          "id": "1754593538390"
+          "front": "another",
+          "back": "card",
+          "id": "1754618405958"
         }
       ],
-      "createdAt": "2025-08-07T19:05:42.169Z"
+      "createdAt": "2025-08-08T02:00:10.826Z"
     },
     {
-      "id": "1754612764768",
+      "id": "1754620570612",
       "name": "12",
       "description": "12",
-      "cards": [],
-      "createdAt": "2025-08-08T00:26:04.768Z"
+      "cards": [
+        {
+          "front": "12",
+          "back": "12",
+          "id": "1754620569326"
+        }
+      ],
+      "createdAt": "2025-08-08T02:36:10.612Z"
     }
   ],
   "quizResults": []

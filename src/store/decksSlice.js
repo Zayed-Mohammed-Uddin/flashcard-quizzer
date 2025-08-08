@@ -3,39 +3,28 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
 	// All created decks
 	decks: [],
-	// Draft deck being created
-	draftDeck: {
-		title: "",
-		description: "",
-		cards: [],
-	},
+	// Draft cards being created (only cards need persistence)
+	draftCards: [],
 };
 
 const decksSlice = createSlice({
 	name: "decks",
 	initialState,
 	reducers: {
-		// Draft deck management (for creation workflow)
+		// Draft cards management (for creation workflow)
 		addCardToDraft: (state, action) => {
-			state.draftDeck.cards.push({
+			state.draftCards.push({
 				...action.payload,
 				id: Date.now().toString(),
 			});
 		},
 		removeCardFromDraft: (state, action) => {
-			state.draftDeck.cards = state.draftDeck.cards.filter(
+			state.draftCards = state.draftCards.filter(
 				(card) => card.id !== action.payload
 			);
 		},
-		resetDraftDeck: (state) => {
-			state.draftDeck = {
-				title: "",
-				description: "",
-				cards: [],
-			};
-		},
-		restoreDraftDeck: (state, action) => {
-			state.draftDeck = action.payload;
+		resetDraftCards: (state) => {
+			state.draftCards = [];
 		},
 
 		// Deck management
@@ -54,6 +43,14 @@ const decksSlice = createSlice({
 				(deck) => deck.id !== action.payload
 			);
 		},
+		updateDeck: (state, action) => {
+			const index = state.decks.findIndex(
+				(deck) => deck.id === action.payload.id
+			);
+			if (index !== -1) {
+				state.decks[index] = action.payload;
+			}
+		},
 		loadDecks: (state, action) => {
 			state.decks = action.payload;
 		},
@@ -61,15 +58,15 @@ const decksSlice = createSlice({
 });
 
 export const {
-	// Draft deck actions
+	// Draft cards actions
 	addCardToDraft,
 	removeCardFromDraft,
-	resetDraftDeck,
-	restoreDraftDeck,
+	resetDraftCards,
 
 	// Deck management actions
 	addDeck,
 	deleteDeck,
+	updateDeck,
 	loadDecks,
 } = decksSlice.actions;
 
@@ -79,8 +76,6 @@ export const selectAllDecks = (state) => state.decks.decks;
 export const selectDeckById = (state, deckId) =>
 	state.decks.decks.find((deck) => deck.id === deckId);
 
-export const selectDraftDeck = (state) => state.decks.draftDeck;
-
-export const selectDraftCards = (state) => state.decks.draftDeck.cards;
+export const selectDraftCards = (state) => state.decks.draftCards;
 
 export default decksSlice.reducer;

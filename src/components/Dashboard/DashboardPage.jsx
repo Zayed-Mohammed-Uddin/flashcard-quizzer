@@ -22,7 +22,13 @@ function DashboardPage() {
 		const loadDecksData = async () => {
 			try {
 				const apiDecks = await getDecks();
-				dispatch(loadDecks(apiDecks));
+
+				// Defensive check: ensure we got an array
+				if (Array.isArray(apiDecks)) {
+					dispatch(loadDecks(apiDecks));
+				} else {
+					console.error("Invalid decks data received:", apiDecks);
+				}
 			} catch (error) {
 				console.error("Failed to load decks:", error);
 			}

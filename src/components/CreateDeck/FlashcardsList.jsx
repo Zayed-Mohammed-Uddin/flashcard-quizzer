@@ -20,10 +20,13 @@ import FormGroup from "../../ui/FormGroup";
 import Label from "../../ui/Label";
 import Input from "../../ui/Input";
 
-function FlashcardsList() {
+function FlashcardsList({ mode = "create", cards = [], onCardAdd, onCardRemove }) {
 	const dispatch = useDispatch();
-	const cards = useSelector(selectDraftCards);
-	const cardCount = cards.length;
+	const draftCards = useSelector(selectDraftCards);
+	
+	// Use passed cards for edit mode, Redux state for create mode
+	const cardsToShow = mode === "edit" ? cards : draftCards;
+	const cardCount = cardsToShow.length;
 
 	// Modal state
 	const [open, setOpen] = useState(false);
@@ -35,13 +38,25 @@ function FlashcardsList() {
 	} = useForm({ mode: "onChange" });
 
 	const onAddCard = (cardData) => {
-		dispatch(addCardToDraft(cardData));
+		if (mode === "edit" && onCardAdd) {
+			// Edit mode: use callback
+			onCardAdd(cardData);
+		} else {
+			// Create mode: use Redux
+			dispatch(addCardToDraft(cardData));
+		}
 		resetCardForm();
 		setOpen(false);
 	};
 
 	const onRemoveCard = (id) => {
-		dispatch(removeCardFromDraft(id));
+		if (mode === "edit" && onCardRemove) {
+			// Edit mode: use callback
+			onCardRemove(id);
+		} else {
+			// Create mode: use Redux
+			dispatch(removeCardFromDraft(id));
+		}
 	};
 
 	const openModal = () => setOpen(true);
@@ -68,7 +83,7 @@ function FlashcardsList() {
 				</EmptyState>
 			) : (
 				<CardsList>
-					{cards.map((card) => (
+					{cardsToShow.map((card) => (
 						<FlashcardItem
 							card={card}
 							key={card.id}

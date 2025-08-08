@@ -56,3 +56,16 @@ export async function deleteDeck(deckId) {
 		method: "DELETE",
 	});
 }
+
+// Update an existing deck in db.json
+export async function updateDeck(deckId, deckData) {
+	const updatedDeck = {
+		...deckData,
+		id: deckId,
+	};
+
+	return await apiRequest(`/decks/${deckId}`, {
+		method: "PUT",
+		body: JSON.stringify(updatedDeck),
+	});
+}
