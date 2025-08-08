@@ -7,7 +7,7 @@ import {
 	addCardToDraft,
 	removeCardFromDraft,
 	selectDraftCards,
-} from "../../store/decksSlice";
+} from "./slice/decksSlice";
 import Button from "../../ui/Button";
 import FlashcardsSection from "../../ui/FlashcardsSection";
 import FlashcardsHeader from "../../ui/FlashcardsHeader";

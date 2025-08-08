@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import { deleteDeck } from "../../store/decksSlice";
+import { deleteDeck } from "../Deck/slice/decksSlice";
 import { deleteDeck as deleteDeckApi } from "../../services/deckApi";
 import Card from "../../ui/Card";
 import CardHeader from "../../ui/CardHeader";

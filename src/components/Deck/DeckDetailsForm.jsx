@@ -9,7 +9,7 @@ import {
 	resetDraftCards,
 	selectDraftCards,
 	updateDeck as updateDeckAction,
-} from "../../store/decksSlice";
+} from "./slice/decksSlice";
 
 import SectionTitle from "../../ui/SectionTitle";
 import FormGroup from "../../ui/FormGroup";

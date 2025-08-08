@@ -2,7 +2,7 @@ import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { selectAllDecks, loadDecks } from "../../store/decksSlice";
+import { selectAllDecks, loadDecks } from "../Deck/slice/decksSlice";
 import { getDecks } from "../../services/deckApi";
 import Heading from "../../ui/Heading";
 import Button from "../../ui/Button";
