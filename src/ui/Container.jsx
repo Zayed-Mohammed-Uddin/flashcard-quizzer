@@ -2,6 +2,10 @@ import tw from "tailwind-styled-components";
 
 const StyledContainer = tw.section`
   w-full
+  min-h-screen
+  sm:min-h-0
+  flex
+  flex-col
   sm:max-w-4xl
   mx-auto
   sm:my-6

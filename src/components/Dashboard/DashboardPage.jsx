@@ -7,6 +7,15 @@ import { getDecks } from "../../services/deckApi";
 import { MESSAGES, ROUTES, pluralize } from "../../utils";
 import { Heading, Button, ContentHeader, SubText, DecksGrid } from "../../ui";
 import DeckCardItem from "./DeckCardItem";
+import tw from "tailwind-styled-components";
+
+const LeftBlock = tw.div`
+  flex flex-col
+`;
+
+const RightBlock = tw.div`
+  w-full sm:w-auto
+`;
 
 function DashboardPage() {
 	const navigate = useNavigate();
@@ -45,8 +54,8 @@ function DashboardPage() {
 
 	return (
 		<>
-			<ContentHeader type="horizontal">
-				<div className="flex flex-col gap-2">
+			<ContentHeader>
+				<LeftBlock>
 					<Heading as="h1">My Flashcard Decks</Heading>
 					<SubText>
 						{deckCount === 0
@@ -56,13 +65,17 @@ function DashboardPage() {
 									"deck"
 							  )}`}
 					</SubText>
-				</div>
-				<div className="flex gap-2">
-					<Button variant="primary" onClick={handleCreateDeck}>
+				</LeftBlock>
+				<RightBlock>
+					<Button
+						variant="primary"
+						onClick={handleCreateDeck}
+						className="w-full sm:w-auto" // full width mobile, auto width desktop
+					>
 						<FaPlus className="w-4 h-4" />
 						Create Deck
 					</Button>
-				</div>
+				</RightBlock>
 			</ContentHeader>
 
 			<DecksGrid>

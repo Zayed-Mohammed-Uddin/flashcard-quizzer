@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import tw from "tailwind-styled-components";
 
-const StyledFooter = tw.div`
+const StyledFooter = tw.footer`
     bg-gray-100
     text-center
     text-gray-600
     py-6
+	hidden
+	sm:block
 `;
 function Footer() {
 	return (

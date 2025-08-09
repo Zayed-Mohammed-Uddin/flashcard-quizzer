@@ -2,12 +2,12 @@ import tw from "tailwind-styled-components";
 
 const ContentHeader = tw.header`
   flex
-  gap-1
+  flex-col
   mb-2
-  ${(props) =>
-		props.type === "horizontal"
-			? "sm:flex-row sm:justify-between sm:items-center"
-			: "sm:flex-col"}
+  sm:flex-row
+  sm:items-start
+  sm:justify-between
 `;
+
 
 export default ContentHeader;
