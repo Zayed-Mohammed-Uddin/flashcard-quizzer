@@ -1,40 +1,60 @@
-import { FaEdit, FaTrash, FaCalendarAlt, FaPlay } from "react-icons/fa";
+import { FaEdit, FaCalendarAlt, FaPlay } from "react-icons/fa";
 import { GrUpdate } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useState } from "react";
-import * as AlertDialog from "@radix-ui/react-alert-dialog";
+import { useState, useMemo } from "react";
+import { formatDistanceToNow } from "date-fns";
+import { getCardStats } from "../../utils/spacedRepetition";
 import { deleteDeck } from "../Deck/slice/decksSlice";
 import { deleteDeck as deleteDeckApi } from "../../services/deckApi";
-import Card from "../../ui/Card";
-import CardHeader from "../../ui/CardHeader";
-import CardTitle from "../../ui/CardTitle";
-import CardActions from "../../ui/CardActions";
-import IconButton from "../../ui/IconButton";
-import Description from "../../ui/Description";
-import MetaInfo from "../../ui/MetaInfo";
-import DateInfo from "../../ui/DateInfo";
-import CardStats from "../../ui/CardStats";
-import StatBadge from "../../ui/StatBadge";
-import ReviewButton from "../../ui/ReviewButton";
-import Button from "../../ui/Button";
+import { ROUTES, pluralize } from "../../utils";
+import {
+	Card,
+	CardHeader,
+	CardTitle,
+	CardActions,
+	Button,
+	IconButton,
+	Description,
+	MetaInfo,
+	DateInfo,
+	CardStats,
+	StatBadge,
+} from "../../ui";
+import DeleteDeckDialog from "./DeleteDeckDialog";
+import QuizStartDialog from "./QuizStartDialog";
 
 function DeckCardItem({ deck }) {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
+
 	const totalCards = deck.cards.length;
-	const dueCards = deck.cards.filter(
-		(card) => card.nextReview <= Date.now()
-	).length;
-	const createdDate = new Date(deck.createdAt).toLocaleDateString();
-	const updatedDate = deck.updatedAt
-		? new Date(deck.updatedAt).toLocaleDateString()
-		: null;
+
+	const cardStats = useMemo(() => getCardStats(deck.cards), [deck.cards]);
+	const dueCards = cardStats.due;
+
+	const timeStrings = useMemo(() => {
+		const createdTimeAgo = formatDistanceToNow(new Date(deck.createdAt), {
+			addSuffix: true,
+		});
+		const updatedTimeAgo = deck.updatedAt
+			? formatDistanceToNow(new Date(deck.updatedAt), { addSuffix: true })
+			: null;
+		return { createdTimeAgo, updatedTimeAgo };
+	}, [deck.createdAt, deck.updatedAt]);
+
+	const { createdTimeAgo, updatedTimeAgo } = timeStrings;
+
+	const getScoreBadgeType = (score) => {
+		if (score >= 80) return "score-high";
+		if (score > 50) return "score-medium";
+		return "score-low";
+	};
 
 	const handleEditDeck = () => {
-		navigate(`/edit-deck/${deck.id}`);
+		navigate(`${ROUTES.EDIT_DECK}/${deck.id}`);
 	};
 
 	const handleDeleteClick = async () => {
@@ -52,12 +72,20 @@ function DeckCardItem({ deck }) {
 			}
 		}
 		dispatch(deleteDeck(deck.id));
-		setIsDialogOpen(false);
 		setIsDeleting(false);
 	};
 
 	const handleStartQuiz = () => {
-		navigate(`/quiz-deck/${deck.id}`);
+		if (dueCards === 0) {
+			setIsQuizDialogOpen(true);
+		} else {
+			navigate(`${ROUTES.QUIZ_DECK}/${deck.id}`);
+		}
+	};
+
+	const handleForceStartQuiz = () => {
+		setIsQuizDialogOpen(false);
+		navigate(`${ROUTES.QUIZ_DECK}/${deck.id}?forceAll=true`);
 	};
 
 	return (
@@ -73,55 +101,11 @@ function DeckCardItem({ deck }) {
 						>
 							<FaEdit className="w-4 h-4" />
 						</IconButton>
-						<AlertDialog.Root
-							open={isDialogOpen}
-							onOpenChange={setIsDialogOpen}
-						>
-							<AlertDialog.Trigger asChild>
-								<IconButton type="delete" title="Delete deck">
-									<FaTrash className="w-4 h-4" />
-								</IconButton>
-							</AlertDialog.Trigger>
-							<AlertDialog.Portal>
-								<AlertDialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50" />
-								<AlertDialog.Content
-									className="fixed left-1/2 top-1/2 z-50 bg-white p-6 rounded shadow-lg w-[400px]"
-									style={{
-										transform: "translate(-50%, -50%)",
-									}}
-								>
-									<AlertDialog.Title className="text-lg font-bold mb-2 text-red-600">
-										Delete Deck
-									</AlertDialog.Title>
-									<AlertDialog.Description className="text-gray-600 mb-4">
-										Are you sure you want to delete "
-										{deck.name}"? This action cannot be
-										undone and will permanently remove all{" "}
-										{totalCards} cards in this deck.
-									</AlertDialog.Description>
-									<div className="flex justify-end gap-2">
-										<Button
-											variant="secondary"
-											disabled={isDeleting}
-											onClick={() =>
-												setIsDialogOpen(false)
-											}
-										>
-											Cancel
-										</Button>
-										<Button
-											variant="danger"
-											onClick={handleDeleteClick}
-											disabled={isDeleting}
-										>
-											{isDeleting
-												? "Deleting..."
-												: "Delete Deck"}
-										</Button>
-									</div>
-								</AlertDialog.Content>
-							</AlertDialog.Portal>
-						</AlertDialog.Root>
+						<DeleteDeckDialog
+							deck={deck}
+							onDelete={handleDeleteClick}
+							isDeleting={isDeleting}
+						/>
 					</CardActions>
 				</CardHeader>
 
@@ -129,12 +113,12 @@ function DeckCardItem({ deck }) {
 
 				<MetaInfo>
 					<DateInfo>
-						<FaCalendarAlt className="w-3 h-3" />
-						Created {createdDate}
+						<FaCalendarAlt className="w-3 h-3 mr-1" />
+						{createdTimeAgo}
 						{deck.updatedAt && (
-							<span className="ms-3 text-gray-500 text-sm">
-								<GrUpdate className="inline-block w-3 h-3 mr-1" />
-								Updated {updatedDate}
+							<span className="ms-3 text-sm">
+								<GrUpdate className="inline-block w-3 h-3 mr-2" />
+								{updatedTimeAgo}
 							</span>
 						)}
 					</DateInfo>
@@ -143,17 +127,34 @@ function DeckCardItem({ deck }) {
 				<CardStats>
 					<StatBadge type="total">{totalCards} cards</StatBadge>
 					<StatBadge type="due">{dueCards} due for review</StatBadge>
+					{deck.lastQuizResult && (
+						<StatBadge
+							type={getScoreBadgeType(deck.lastQuizResult.score)}
+						>
+							Last score: {deck.lastQuizResult.score}%
+						</StatBadge>
+					)}
 				</CardStats>
 
-				<ReviewButton
+				<Button
 					variant="primary"
 					size="default"
+					className="w-full"
 					onClick={handleStartQuiz}
 				>
 					<FaPlay className="w-3 h-3" />
-					Review {dueCards} Cards
-				</ReviewButton>
+					{dueCards > 0
+						? `Review ${dueCards} ${pluralize(dueCards, "Card")}`
+						: "Start Quiz"}
+				</Button>
 			</Card>
+
+			<QuizStartDialog
+				deck={deck}
+				isOpen={isQuizDialogOpen}
+				onOpenChange={setIsQuizDialogOpen}
+				onForceStart={handleForceStartQuiz}
+			/>
 		</>
 	);
 }

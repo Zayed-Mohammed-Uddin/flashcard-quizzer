@@ -2,11 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import DeckDetailsForm from "./DeckDetailsForm";
 import FlashcardsList from "./FlashcardsList";
-import BackButton from "../../ui/BackButton";
-import ContentLayout from "../../ui/ContentLayout";
-import ContentHeader from "../../ui/ContentHeader";
-import Heading from "../../ui/Heading";
-import SubText from "../../ui/SubText";
+import {
+	Button,
+	ContentLayout,
+	ContentHeader,
+	Heading,
+	SubText,
+} from "../../ui";
 
 function CreateDeckPage() {
 	const navigate = useNavigate();
@@ -17,10 +19,10 @@ function CreateDeckPage() {
 
 	return (
 		<>
-			<BackButton onClick={handleBack}>
+			<Button variant="back" onClick={handleBack}>
 				<FaArrowLeft className="w-4 h-4" />
 				Back to Decks
-			</BackButton>
+			</Button>
 
 			<ContentHeader type="vertical">
 				<Heading as="h1">Create New Deck</Heading>

@@ -3,17 +3,18 @@ import { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import DeckDetailsForm from "./DeckDetailsForm";
 import FlashcardsList from "./FlashcardsList";
-import BackButton from "../../ui/BackButton";
-import ContentLayout from "../../ui/ContentLayout";
-import ContentHeader from "../../ui/ContentHeader";
-import Heading from "../../ui/Heading";
-import SubText from "../../ui/SubText";
+import {
+	Button,
+	ContentLayout,
+	ContentHeader,
+	Heading,
+	SubText,
+} from "../../ui";
 
 function EditDeckPage() {
 	const navigate = useNavigate();
 	const { deck } = useLoaderData();
 
-	// Local state for edit cards (isolated from Redux draft)
 	const [editCards, setEditCards] = useState(deck.cards || []);
 
 	const handleBack = () => {
@@ -32,12 +33,20 @@ function EditDeckPage() {
 		setEditCards((prev) => prev.filter((card) => card.id !== cardId));
 	};
 
+	const handleCardEdit = (cardId, cardData) => {
+		setEditCards((prev) =>
+			prev.map((card) =>
+				card.id === cardId ? { ...card, ...cardData } : card
+			)
+		);
+	};
+
 	return (
 		<>
-			<BackButton onClick={handleBack}>
+			<Button variant="back" onClick={handleBack}>
 				<FaArrowLeft className="w-4 h-4" />
 				Back to Decks
-			</BackButton>
+			</Button>
 
 			<ContentHeader type="vertical">
 				<Heading as="h1">Edit Deck</Heading>
@@ -56,6 +65,7 @@ function EditDeckPage() {
 					cards={editCards}
 					onCardAdd={handleCardAdd}
 					onCardRemove={handleCardRemove}
+					onCardEdit={handleCardEdit}
 				/>
 			</ContentLayout>
 		</>

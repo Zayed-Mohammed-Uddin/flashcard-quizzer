@@ -1,7 +1,6 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
-import AppLayout from "./ui/AppLayout";
-import Error from "./ui/Error";
+import { AppLayout, Error } from "./ui";
 
 import DashboardPage from "./components/Dashboard/DashboardPage";
 import CreateDeckPage from "./components/Deck/CreateDeckPage";
@@ -37,10 +36,23 @@ const router = createBrowserRouter([
 			},
 		],
 	},
+	{
+		future: {
+			v7_startTransition: true,
+		},
+	},
 ]);
 
 function App() {
-	return <RouterProvider router={router} />;
+	return (
+		<RouterProvider
+			router={router}
+			hydrationData={{}}
+			future={{
+				v7_startTransition: true,
+			}}
+		/>
+	);
 }
 
 export default App;

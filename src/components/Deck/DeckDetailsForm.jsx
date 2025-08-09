@@ -10,16 +10,17 @@ import {
 	selectDraftCards,
 	updateDeck as updateDeckAction,
 } from "./slice/decksSlice";
-
-import SectionTitle from "../../ui/SectionTitle";
-import FormGroup from "../../ui/FormGroup";
-import Label from "../../ui/Label";
-import Input from "../../ui/Input";
-import Textarea from "../../ui/Textarea";
-import ActionButtons from "../../ui/ActionButtons";
-import SaveButton from "../../ui/SaveButton";
-import ResetButton from "../../ui/ResetButton";
-import Form from "../../ui/Form";
+import { VALIDATION_RULES, MESSAGES } from "../../utils";
+import {
+	Form,
+	FormGroup,
+	Label,
+	Input,
+	Textarea,
+	ActionButtons,
+	Button,
+	SectionTitle,
+} from "../../ui";
 
 function DeckDetailsForm({ mode = "create", initialData = null }) {
 	const navigate = useNavigate();
@@ -29,7 +30,6 @@ function DeckDetailsForm({ mode = "create", initialData = null }) {
 	const isLoading = navigation.state === "submitting";
 	const isEditing = mode === "edit";
 
-	// Choose cards based on mode: edit uses passed data, create uses Redux
 	const cards = isEditing ? initialData?.cards || [] : draftCards;
 
 	const {
@@ -53,26 +53,21 @@ function DeckDetailsForm({ mode = "create", initialData = null }) {
 			};
 
 			if (isEditing && initialData?.id) {
-				// Update existing deck
 				const updatedDeck = await updateDeck(initialData.id, deckData);
 
-				// Defensive check: ensure we got valid data back
 				if (updatedDeck && updatedDeck.id) {
 					dispatch(updateDeckAction(updatedDeck));
 				} else {
 					throw new Error("Invalid response from server");
 				}
 			} else {
-				// Create new deck
 				const newDeck = await createDeck(deckData);
 
-				// Defensive check for create operation
 				if (!newDeck || !newDeck.id) {
 					throw new Error("Failed to create deck - invalid response");
 				}
 			}
 
-			// Only reset draft cards in create mode
 			if (!isEditing) {
 				dispatch(resetDraftCards());
 			}
@@ -94,9 +89,8 @@ function DeckDetailsForm({ mode = "create", initialData = null }) {
 					{...register("deckName", {
 						required: "Deck name is required",
 						minLength: {
-							value: 2,
-							message:
-								"Deck name must be at least 2 characters long",
+							value: VALIDATION_RULES.DECK_NAME_MIN_LENGTH,
+							message: `Deck name must be at least ${VALIDATION_RULES.DECK_NAME_MIN_LENGTH} characters long`,
 						},
 					})}
 					className={errors.deckName ? "border-red-500" : ""}
@@ -115,9 +109,8 @@ function DeckDetailsForm({ mode = "create", initialData = null }) {
 					{...register("description", {
 						required: "Description is required",
 						minLength: {
-							value: 2,
-							message:
-								"Description must be at least 2 characters long",
+							value: VALIDATION_RULES.DESCRIPTION_MIN_LENGTH,
+							message: `Description must be at least ${VALIDATION_RULES.DESCRIPTION_MIN_LENGTH} characters long`,
 						},
 					})}
 					className={errors.description ? "border-red-500" : ""}
@@ -130,26 +123,28 @@ function DeckDetailsForm({ mode = "create", initialData = null }) {
 			</FormGroup>
 
 			<ActionButtons>
-				<SaveButton
+				<Button
 					variant="primary"
 					type="submit"
 					disabled={isLoading}
+					order="second"
 				>
 					<IoIosSave className="w-4 h-4" />
 					{isLoading
-						? "Saving..."
+						? MESSAGES.SAVING
 						: isEditing
 						? "Update Deck"
 						: "Save Deck"}
-				</SaveButton>
-				<ResetButton
+				</Button>
+				<Button
 					variant="secondary"
 					type="reset"
 					disabled={isLoading}
+					order="first"
 				>
 					<RiResetRightLine className="w-4 h-4" />
 					Reset
-				</ResetButton>
+				</Button>
 			</ActionButtons>
 		</Form>
 	);

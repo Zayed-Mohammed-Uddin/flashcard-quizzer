@@ -27,10 +27,16 @@ const StyledButton = tw.button`
 			return "bg-gray-900 text-white hover:bg-gray-800 hover:shadow-xl sm:hover:shadow-lg active:bg-gray-950 focus:ring-gray-900";
 		}
 		if (props.variant === "secondary") {
-			return "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-lg sm:hover:shadow-md active:bg-gray-100 focus:ring-blue-500";
+			return "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-lg sm:hover:shadow-md active:bg-gray-100 focus:ring-gray-500";
 		}
 		if (props.variant === "ghost") {
 			return "text-gray-600 hover:text-gray-800 hover:bg-gray-100 hover:shadow-md sm:hover:shadow-sm active:bg-gray-200 focus:ring-gray-500 border border-gray-300";
+		}
+		if (props.variant === "danger" || props.variant === "destructive") {
+			return "bg-red-600 text-white hover:bg-red-700 hover:shadow-xl sm:hover:shadow-lg active:bg-red-800 focus:ring-red-600";
+		}
+		if (props.variant === "back") {
+			return "text-gray-600 hover:text-gray-800 hover:bg-gray-200/60 focus:ring-gray-500 transition-colors mb-2";
 		}
 		return "bg-gray-900 text-white hover:bg-gray-800 hover:shadow-xl sm:hover:shadow-lg active:bg-gray-950 focus:ring-gray-900";
   }}
@@ -42,13 +48,32 @@ const StyledButton = tw.button`
 		if (props.size === "lg") {
 			return "px-4 sm:px-6 py-2.5 sm:py-3 text-lg sm:text-base";
 		}
+		if (props.variant === "back") {
+			return "p-2";
+		}
 		return "px-3 sm:px-4 py-2 text-md sm:text-base";
+  }}
+
+  ${(props) => {
+		if (props.order === "first") {
+			return "order-1 sm:order-2";
+		}
+		if (props.order === "second") {
+			return "order-2 sm:order-1";
+		}
+		return "";
   }}
 `;
 
-function Button({ children, variant = "primary", size = "default", ...props }) {
+function Button({
+	children,
+	variant = "primary",
+	size = "default",
+	order = null,
+	...props
+}) {
 	return (
-		<StyledButton variant={variant} size={size} {...props}>
+		<StyledButton variant={variant} size={size} order={order} {...props}>
 			{children}
 		</StyledButton>
 	);

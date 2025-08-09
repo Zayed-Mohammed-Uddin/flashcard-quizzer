@@ -1,6 +1,5 @@
-import { API_BASE_URL } from "../utils/helper";
+import { API_BASE_URL } from "../utils";
 
-// Generic API request function
 async function apiRequest(endpoint, options = {}) {
 	const url = `${API_BASE_URL}${endpoint}`;
 
@@ -24,17 +23,14 @@ async function apiRequest(endpoint, options = {}) {
 	}
 }
 
-// 1. Fetch all decks from db.json
 export async function getDecks() {
 	return await apiRequest("/decks");
 }
 
-// 1b. Fetch a single deck by ID
 export async function getDeckById(deckId) {
 	return await apiRequest(`/decks/${deckId}`);
 }
 
-// 3. Create a new deck in db.json
 export async function createDeck(deckData) {
 	const newDeck = {
 		id: Date.now().toString(),
@@ -50,18 +46,14 @@ export async function createDeck(deckData) {
 	});
 }
 
-// 6. Delete a deck from db.json
 export async function deleteDeck(deckId) {
 	return await apiRequest(`/decks/${deckId}`, {
 		method: "DELETE",
 	});
 }
 
-// Update an existing deck in db.json
 export async function updateDeck(deckId, deckData) {
-	// First, get the existing deck to preserve certain fields
 	const existingDeck = await getDeckById(deckId);
-
 	const updatedDeck = {
 		...deckData,
 		id: deckId,

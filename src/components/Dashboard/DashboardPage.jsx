@@ -1,14 +1,11 @@
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { selectAllDecks, loadDecks } from "../Deck/slice/decksSlice";
 import { getDecks } from "../../services/deckApi";
-import Heading from "../../ui/Heading";
-import Button from "../../ui/Button";
-import ContentHeader from "../../ui/ContentHeader";
-import SubText from "../../ui/SubText";
-import DecksGrid from "../../ui/DecksGrid";
+import { MESSAGES, ROUTES, pluralize } from "../../utils";
+import { Heading, Button, ContentHeader, SubText, DecksGrid } from "../../ui";
 import DeckCardItem from "./DeckCardItem";
 
 function DashboardPage() {
@@ -16,14 +13,18 @@ function DashboardPage() {
 	const dispatch = useDispatch();
 	const decks = useSelector(selectAllDecks);
 	const deckCount = decks.length;
+	const hasLoadedRef = useRef(false);
 
-	// Load decks from API on component mount
 	useEffect(() => {
+		if (hasLoadedRef.current || decks.length > 0) {
+			return;
+		}
+
 		const loadDecksData = async () => {
 			try {
+				hasLoadedRef.current = true;
 				const apiDecks = await getDecks();
 
-				// Defensive check: ensure we got an array
 				if (Array.isArray(apiDecks)) {
 					dispatch(loadDecks(apiDecks));
 				} else {
@@ -31,17 +32,15 @@ function DashboardPage() {
 				}
 			} catch (error) {
 				console.error("Failed to load decks:", error);
+				hasLoadedRef.current = false;
 			}
 		};
 
-		// Only load if we don't have decks in Redux already
-		if (decks.length === 0) {
-			loadDecksData();
-		}
+		loadDecksData();
 	}, [dispatch, decks.length]);
 
 	const handleCreateDeck = () => {
-		navigate("/create-deck");
+		navigate(ROUTES.CREATE_DECK);
 	};
 
 	return (
@@ -51,10 +50,11 @@ function DashboardPage() {
 					<Heading as="h1">My Flashcard Decks</Heading>
 					<SubText>
 						{deckCount === 0
-							? "No decks yet. Create your first deck to get started!"
-							: `You have ${deckCount} deck${
-									deckCount === 1 ? "" : "s"
-							  }`}
+							? MESSAGES.NO_DECKS
+							: `You have ${deckCount} ${pluralize(
+									deckCount,
+									"deck"
+							  )}`}
 					</SubText>
 				</div>
 				<div className="flex gap-2">

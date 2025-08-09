@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { generateId } from "../../../utils";
 
 const initialState = {
-	// All created decks
 	decks: [],
-	// Draft cards being created (only cards need persistence)
 	draftCards: [],
 };
 
@@ -11,11 +10,10 @@ const decksSlice = createSlice({
 	name: "decks",
 	initialState,
 	reducers: {
-		// Draft cards management (for creation workflow)
 		addCardToDraft: (state, action) => {
 			state.draftCards.push({
 				...action.payload,
-				id: Date.now().toString(),
+				id: generateId(),
 			});
 		},
 		removeCardFromDraft: (state, action) => {
@@ -23,20 +21,28 @@ const decksSlice = createSlice({
 				(card) => card.id !== action.payload
 			);
 		},
+		editCardInDraft: (state, action) => {
+			const { id, cardData } = action.payload;
+			const index = state.draftCards.findIndex((card) => card.id === id);
+			if (index !== -1) {
+				state.draftCards[index] = {
+					...state.draftCards[index],
+					...cardData,
+				};
+			}
+		},
 		resetDraftCards: (state) => {
 			state.draftCards = [];
 		},
 
-		// Deck management
 		addDeck: (state, action) => {
-			const deck = {
-				id: action.payload.id || Date.now().toString(),
+			state.decks.push({
+				id: action.payload.id || generateId(),
 				name: action.payload.name,
 				description: action.payload.description,
 				cards: action.payload.cards || [],
 				createdAt: action.payload.createdAt || new Date().toISOString(),
-			};
-			state.decks.push(deck);
+			});
 		},
 		deleteDeck: (state, action) => {
 			state.decks = state.decks.filter(
@@ -54,23 +60,50 @@ const decksSlice = createSlice({
 		loadDecks: (state, action) => {
 			state.decks = action.payload;
 		},
+		updateDeckWithQuizResults: (state, action) => {
+			const { deck, correctAnswers, totalCards, updatedCards } =
+				action.payload;
+			const percentage = Math.round((correctAnswers / totalCards) * 100);
+			const timestamp = new Date().toISOString();
+
+			const updatedDeckCards = deck.cards.map((card) => {
+				const updatedCard = updatedCards.find(
+					(updated) => updated.id === card.id
+				);
+				return updatedCard || card;
+			});
+
+			const index = state.decks.findIndex((d) => d.id === deck.id);
+			if (index !== -1) {
+				state.decks[index] = {
+					...deck,
+					cards: updatedDeckCards,
+					lastQuizResult: {
+						score: percentage,
+						correctAnswers,
+						totalCards,
+						completedAt: timestamp,
+					},
+					updatedAt: timestamp,
+				};
+			}
+		},
 	},
 });
 
 export const {
-	// Draft cards actions
 	addCardToDraft,
 	removeCardFromDraft,
+	editCardInDraft,
 	resetDraftCards,
 
-	// Deck management actions
 	addDeck,
 	deleteDeck,
 	updateDeck,
 	loadDecks,
+	updateDeckWithQuizResults,
 } = decksSlice.actions;
 
-// Selectors
 export const selectAllDecks = (state) => state.decks.decks;
 
 export const selectDeckById = (state, deckId) =>

@@ -1,4 +1,8 @@
-import { useRouteError, isRouteErrorResponse, useNavigate } from "react-router-dom";
+import {
+	useRouteError,
+	isRouteErrorResponse,
+	useNavigate,
+} from "react-router-dom";
 import Button from "../ui/Button";
 import Container from "../ui/Container";
 import Heading from "../ui/Heading";
@@ -11,12 +15,11 @@ function Error() {
 	const handleGoHome = () => navigate("/");
 	const handleRetry = () => window.location.reload();
 
-	// Get error details
 	const errorTitle = isRouteError ? error.status : "Oops!";
-	const errorMessage = isRouteError 
-		? error.statusText 
+	const errorMessage = isRouteError
+		? error.statusText
 		: "Something went wrong";
-	const errorDetails = isRouteError 
+	const errorDetails = isRouteError
 		? error.data || "Something went wrong"
 		: error?.message || "An unexpected error occurred";
 
@@ -30,9 +33,7 @@ function Error() {
 					<Heading as="h2" className="text-xl text-gray-800 mb-2">
 						{errorMessage}
 					</Heading>
-					<p className="text-gray-600">
-						{errorDetails}
-					</p>
+					<p className="text-gray-600">{errorDetails}</p>
 				</div>
 
 				<div className="flex gap-4">

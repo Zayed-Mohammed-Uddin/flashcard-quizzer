@@ -1,6 +1,7 @@
 import tw from "tailwind-styled-components";
 import { GoBook } from "react-icons/go";
 import { FaUser } from "react-icons/fa";
+import { APP_CONFIG } from "../utils";
 
 const StyledNavigation = tw.nav`
   bg-white
@@ -74,14 +75,14 @@ function Navigation() {
 				<BookIcon>
 					<GoBook />
 				</BookIcon>
-				<Title>Flashcard Quizzer</Title>
+				<Title>{APP_CONFIG.APP_NAME}</Title>
 			</NavContentLeft>
 			<NavContentRight>
 				<UserSection>
 					<UserAvatar>
 						<FaUser className="w-4 h-4" />
 					</UserAvatar>
-					<UserName>John Doe</UserName>
+					<UserName>{APP_CONFIG.USER_NAME}</UserName>
 				</UserSection>
 			</NavContentRight>
 		</StyledNavigation>
