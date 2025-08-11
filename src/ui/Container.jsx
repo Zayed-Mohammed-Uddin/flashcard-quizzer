@@ -1,28 +1,23 @@
 import tw from "tailwind-styled-components";
 
-const StyledContainer = tw.section`
-  w-full
-  min-h-screen
-  sm:min-h-0
-  flex
-  flex-col
-  sm:max-w-4xl
-  mx-auto
-  sm:my-6
-  lg:my-12
-  sm:border
-  sm:border-gray-200
-  sm:rounded-lg
-  sm:bg-white
-  sm:shadow-sm
-  px-10
-  py-4
-  sm:p-6
-  lg:p-8
+const StyledSection = tw.section`
+  flex items-center justify-center
+  min-h-[calc(100vh-136.67px)]
+  px-4
+`;
+
+const StyledContainer = tw.div`
+  w-full max-w-screen-md md:max-w-screen-lg
+  sm:border sm:border-gray-200 sm:rounded-lg sm:bg-white sm:shadow-sm
+  p-6 md:p-10 sm:my-[3rem]
 `;
 
 function Container({ children }) {
-	return <StyledContainer>{children}</StyledContainer>;
+	return (
+		<StyledSection>
+			<StyledContainer>{children}</StyledContainer>
+		</StyledSection>
+	);
 }
 
 export default Container;

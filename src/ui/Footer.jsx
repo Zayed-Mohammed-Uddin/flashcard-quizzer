@@ -6,8 +6,6 @@ const StyledFooter = tw.footer`
     text-center
     text-gray-600
     py-6
-	hidden
-	sm:block
 `;
 function Footer() {
 	return (

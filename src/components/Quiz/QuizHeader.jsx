@@ -4,8 +4,8 @@ import { pluralize } from "../../utils";
 
 function QuizHeader({ deck, currentCardIndex, totalCards, onRestart, onExit }) {
 	return (
-		<ContentHeader type="horizontal">
-			<div className="flex flex-col gap-2">
+		<ContentHeader>
+			<div>
 				<Heading as="h1">Quiz: {deck.title || deck.name}</Heading>
 				<SubText>
 					{pluralize(currentCardIndex + 1, "Card")}{" "}
