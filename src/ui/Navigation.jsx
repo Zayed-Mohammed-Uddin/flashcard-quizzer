@@ -1,7 +1,14 @@
 import tw from "tailwind-styled-components";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { GoBook } from "react-icons/go";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import { APP_CONFIG } from "../utils";
+import {
+	selectUsername,
+	clearUsername,
+} from "../components/User/slice/userSlice";
+import Button from "./Button";
 
 const StyledNavigation = tw.nav`
   bg-white
@@ -69,6 +76,15 @@ const UserName = tw.span`
 `;
 
 function Navigation() {
+	const username = useSelector(selectUsername);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		dispatch(clearUsername());
+		navigate("/welcome");
+	};
+
 	return (
 		<StyledNavigation>
 			<NavContentLeft>
@@ -78,12 +94,24 @@ function Navigation() {
 				<Title>{APP_CONFIG.APP_NAME}</Title>
 			</NavContentLeft>
 			<NavContentRight>
-				<UserSection>
-					<UserAvatar>
-						<FaUser className="w-4 h-4" />
-					</UserAvatar>
-					<UserName>{APP_CONFIG.USER_NAME}</UserName>
-				</UserSection>
+				{username && (
+					<>
+						<UserSection>
+							<UserAvatar>
+								<FaUser className="w-4 h-4" />
+							</UserAvatar>
+							<UserName>{username}</UserName>
+						</UserSection>
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={handleLogout}
+							className="p-2"
+						>
+							<FaSignOutAlt className="w-4 h-4" />
+						</Button>
+					</>
+				)}
 			</NavContentRight>
 		</StyledNavigation>
 	);
