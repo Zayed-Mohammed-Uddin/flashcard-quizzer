@@ -13,7 +13,7 @@ function LandingPage() {
 
 	return (
 		<div className="max-w-md mx-auto">
-			<ContentHeader type="vertical">
+			<ContentHeader type="vertical" className="text-center">
 				<Heading as="h1">Welcome to Flashcard Quizzer</Heading>
 				<SubText className="text-center">
 					Master your learning with spaced repetition flashcards.

@@ -20,7 +20,7 @@ const router = createBrowserRouter(
 			errorElement: <Error />,
 			children: [
 				{
-					path: "welcome",
+					path: "/welcome",
 					element: <LandingPage />,
 				},
 				{
@@ -31,16 +31,16 @@ const router = createBrowserRouter(
 							element: <DashboardPage />,
 						},
 						{
-							path: "create-deck",
+							path: "/create-deck",
 							element: <CreateDeckPage />,
 						},
 						{
-							path: "edit-deck/:deckId",
+							path: "/edit-deck/:deckId",
 							element: <EditDeckPage />,
 							loader: editDeckLoader,
 						},
 						{
-							path: "quiz-deck/:deckId",
+							path: "/quiz-deck/:deckId",
 							element: <QuizPage />,
 							loader: quizDeckLoader,
 						},
